@@ -11,10 +11,10 @@ struct ContentView: View {
     @StateObject private var viewModel = CatViewModel()
 
     var body: some View {
-        NavigationView { // Wrap ContentView in NavigationView
+        NavigationView { 
             ZStack {
-                // Background Image
-                Image("cat_facts_background") // Add your background image to Assets.xcassets and name it "cat_facts_background".
+                
+                Image("cat_facts_background") 
                     .resizable()
                     .scaledToFill()
                     .edgesIgnoringSafeArea(.all)
@@ -36,7 +36,7 @@ struct ContentView: View {
                         }
 
                         Text(viewModel.catFact)
-                            .font(.custom("ChalkboardSE-Regular", size: 18)) // Use your preferred custom font
+                            .font(.custom("ChalkboardSE-Regular", size: 18)) /
                             .multilineTextAlignment(.center)
                             .padding()
                             .background(Color.white.opacity(0.7))
@@ -44,8 +44,6 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-
-
             }
             .onTapGesture {
                 viewModel.fetchCatData()
@@ -55,8 +53,6 @@ struct ContentView: View {
             }
         }
     }
-
-
 }
 
 struct ContentView_Previews: PreviewProvider {
