@@ -8,29 +8,58 @@
 import XCTest
 @testable import CatFactsApp
 
-final class CatFactsAppTests: XCTestCase {
+class CatFactsAppTests: XCTestCase {
+    
+    var viewModel: CatViewModel!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        viewModel = CatViewModel()
+        
+        URLProtocol.registerClass(MockURLProtocol.self)
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        URLProtocol.unregisterClass(MockURLProtocol.self)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testFetchCatData_Success() {
+        let mockData = """
+        [
+            {
+                "id": "8m9",
+                "url": "https://cdn2.thecatapi.com/images/8m9.jpg",
+                "width": 612,
+                "height": 612
+            }
+        ]
+        """.data(using: .utf8)
+        MockURLProtocol.stubbedResponseData = mockData
+
+        viewModel.fetchCatData()
+
+        XCTAssertEqual(viewModel.catImageURL, "https://cdn2.thecatapi.com/images/8m9.jpg")
+        XCTAssertNil(viewModel.errorMessage)
+        XCTAssertFalse(viewModel.isLoading)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testFetchCatData_Failure() {
+        MockURLProtocol.stubbedResponseError = NSError(domain: "NetworkError", code: 500, userInfo: nil)
+
+        viewModel.fetchCatData()
+
+        XCTAssertNil(viewModel.catImageURL)
+        XCTAssertEqual(viewModel.errorMessage, "NetworkError")
+        XCTAssertFalse(viewModel.isLoading)
+    }
+
+    func testFetchCatData_EmptyResponse() {
+        MockURLProtocol.stubbedResponseData = Data()
+
+        viewModel.fetchCatData()
+
+        XCTAssertNil(viewModel.catImageURL)
+        XCTAssertEqual(viewModel.errorMessage, "No data received")
+        XCTAssertFalse(viewModel.isLoading)
     }
 
 }
