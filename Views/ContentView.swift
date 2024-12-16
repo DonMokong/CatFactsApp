@@ -36,7 +36,7 @@ struct ContentView: View {
                         }
 
                         Text(viewModel.catFact)
-                            .font(.custom("ChalkboardSE-Regular", size: 18)) /
+                            .font(.custom("ChalkboardSE-Regular", size: 18))
                             .multilineTextAlignment(.center)
                             .padding()
                             .background(Color.white.opacity(0.7))
